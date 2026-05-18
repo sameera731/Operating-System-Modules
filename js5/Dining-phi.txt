@@ -1,0 +1,63 @@
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <chrono>
+using namespace std;
+
+#define N 5
+
+int chopstick[N] = {1,1,1,1,1}; // 1 = free, 0 = busy
+mutex mtx;
+
+void philosopher(int id) {
+    int left = id;
+    int right = (id + 1) % N;
+
+    for(int i = 0; i < 2; i++) {
+
+        cout << "Philosopher " << id << " is thinking\n";
+        this_thread::sleep_for(chrono::milliseconds(300));
+
+        // WAIT UNTIL BOTH FORKS AVAILABLE
+        while(true) {
+            mtx.lock();
+
+            if(chopstick[left] == 1 && chopstick[right] == 1) {
+                chopstick[left] = 0;
+                chopstick[right] = 0;
+                mtx.unlock();
+                break;
+            }
+
+            mtx.unlock();
+            // small delay to avoid busy spinning
+            this_thread::sleep_for(chrono::milliseconds(10));
+        }
+
+        // eating
+        cout << "Philosopher " << id << " is eating\n";
+        this_thread::sleep_for(chrono::milliseconds(300));
+
+        // release forks
+        mtx.lock();
+        chopstick[left] = 1;
+        chopstick[right] = 1;
+        mtx.unlock();
+
+        cout << "Philosopher " << id << " finished eating\n";
+    }
+}
+
+int main() {
+    thread p[N];
+
+    for(int i = 0; i < N; i++) {
+        p[i] = thread(philosopher, i);
+    }
+
+    for(int i = 0; i < N; i++) {
+        p[i].join();
+    }
+
+    return 0;
+}

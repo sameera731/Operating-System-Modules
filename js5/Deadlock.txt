@@ -1,0 +1,87 @@
+#include <iostream>
+using namespace std;
+
+#define P 3
+#define R 2
+
+int main() {
+
+    int Available[R] = {0,0};
+
+    int Allocation[P][R] = {
+        {1,0},
+        {0,1},
+        {1,1}
+    };
+
+    int Request[P][R] = {
+        {0,1},
+        {1,0},
+        {1,1}
+    };
+
+    int Work[R];
+
+    bool Finish[P]={false};
+
+
+
+    // Work = Available
+    for(int i=0;i<R;i++)
+        Work[i]=Available[i];
+
+
+
+    // Detection Algorithm
+    for(int count=0; count<P; count++) {
+
+        for(int i=0;i<P;i++) {
+
+            if(!Finish[i]) {
+
+                bool canRun=true;
+
+                for(int j=0;j<R;j++) {
+
+                    if(Request[i][j] > Work[j]) {
+
+                        canRun=false;
+
+                        break;
+                    }
+                }
+
+                // process can complete
+                if(canRun) {
+
+                    for(int j=0;j<R;j++)
+                        Work[j]+=Allocation[i][j];
+
+                    Finish[i]=true;
+                }
+            }
+        }
+    }
+
+
+
+    // Check deadlock
+    bool deadlock=false;
+
+    cout<<"Deadlocked Processes: ";
+
+    for(int i=0;i<P;i++) {
+
+        if(!Finish[i]) {
+
+            cout<<"P"<<i<<" ";
+
+            deadlock=true;
+        }
+    }
+
+    if(!deadlock)
+        cout<<"None";
+
+    return 0;
+}

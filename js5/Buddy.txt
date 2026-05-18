@@ -1,0 +1,90 @@
+// #include <iostream>
+// #include <vector>
+// #include <cmath>
+#include<bits/stdc++.h>
+using namespace std;
+
+// #define MAX 1024   // total memory
+
+vector<int> freeList;  // stores free block sizes
+
+// find next power of 2
+int nextPowerOf2(int n) {
+    int p = 1;
+    while(p < n) p *= 2;
+    return p;
+}
+
+// allocate memory
+void allocate(int size) {
+    int req = nextPowerOf2(size);
+
+    for(int i = 0; i < freeList.size(); i++) {
+        if(freeList[i] >= req) {
+
+            int block = freeList[i];
+            freeList.erase(freeList.begin() + i);
+
+            // split until exact size
+            while(block > req) {
+                block /= 2;
+                freeList.push_back(block); // buddy
+            }
+
+            cout << "Allocated " << req << endl;
+            return;
+        }
+    }
+
+    cout << "Allocation failed\n";
+}
+
+// free memory
+void deallocate(int size) {
+    int block = nextPowerOf2(size);
+    freeList.push_back(block);
+
+    // try merging
+    for(int i = 0; i < freeList.size(); i++) {
+        for(int j = i + 1; j < freeList.size(); j++) {
+            if(freeList[i] == freeList[j]) {
+                int merged = freeList[i] * 2;
+
+                freeList.erase(freeList.begin() + j);
+                freeList.erase(freeList.begin() + i);
+
+                freeList.push_back(merged);
+                i = -1; // restart
+                break;
+            }
+        }
+    }
+
+    cout << "Deallocated " << block << endl;
+}
+
+// display free blocks
+void display() {
+    cout << "Free blocks: ";
+    for(int x : freeList)
+        cout << x << " ";
+    cout << endl;
+}
+
+int main() {
+    freeList.push_back(1024);
+
+    allocate(100);
+    display();
+
+    allocate(200);
+    display();
+
+    deallocate(100);
+    display();
+
+    deallocate(200);
+    display();
+
+    return 0;
+}

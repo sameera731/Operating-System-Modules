@@ -1,0 +1,59 @@
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <semaphore.h>
+using namespace std;
+
+#define BUFFER_SIZE 5
+
+int buffer[BUFFER_SIZE];
+int in = 0, out = 0;
+
+mutex mtx;
+sem_t emptySlots, full;   // renamed
+
+void producer(int id) {
+    int item = id;
+
+    sem_wait(&emptySlots);     // wait if buffer full
+    mtx.lock();
+
+    buffer[in] = item;
+    cout << "Producer " << id << " produced " << item << endl;
+    in = (in + 1) % BUFFER_SIZE;
+
+    mtx.unlock();
+    sem_post(&full);      // increase filled count
+}
+
+void consumer(int id) {
+    sem_wait(&full);      // wait if buffer empty
+    mtx.lock();
+
+    int item = buffer[out];
+    cout << "Consumer " << id << " consumed " << item << endl;
+    out = (out + 1) % BUFFER_SIZE;
+
+    mtx.unlock();
+    sem_post(&emptySlots);     // increase empty slots
+}
+
+int main() {
+    sem_init(&emptySlots, 0, BUFFER_SIZE);
+    sem_init(&full, 0, 0);
+
+    thread p1(producer, 1);
+    thread p2(producer, 2);
+    thread c1(consumer, 1);
+    thread c2(consumer, 2);
+
+    p1.join();
+    p2.join();
+    c1.join();
+    c2.join();
+
+    sem_destroy(&emptySlots);
+    sem_destroy(&full);
+
+    return 0;
+}

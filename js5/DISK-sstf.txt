@@ -1,0 +1,51 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    //we know in output m requests will be printed just order acc to sstf. so loop over m. 
+    //in loop, loop over m and find the shorted abs with curr. store it in shortest var which was max i.e 1e9 initially.
+    //then print it, total+= and then mark it bool done to not repeat.
+    //cur=req[mn] where mn is idx of minimum or shortest abs.
+    int m,n,head,curr;
+    int total=0;
+    
+    cout<<"\nenter total no of tracks: ";
+    cin>>n;
+    cout<<"\n enter r/w head position";
+    cin>>head;
+    curr=head;
+    cout<<"\nenter total no of requests: ";
+    cin>>m;
+    vector<bool>done(m,false);                                           //impp
+    cout<<"\nenter the requests one by one with space: \n";
+    vector<int>req(m);
+    for(int i=0; i<m; i++){
+        int a;
+        cin>>a;
+        req[i]=a;
+
+    }
+    //sstf
+    // int shortest_seek=1e9; //wrongggg.. we need to reset it to max and find min for each iteration of print
+    int mn=-1;
+    cout<<"\nSSTF is: ";
+    for(int i=0; i<m; i++){
+        int shortest_seek=1e9; ///imppp
+        for(int j=0; j<m; j++){
+            if(done[j]==false && abs(curr-req[j])<shortest_seek){
+                shortest_seek=abs(curr-req[j]);
+                mn=j;
+                
+            
+            }
+        }//mn found and abs with it gives shortest seek time from curr.
+        //choose it now
+        cout<<req[mn]<<"->";
+        total+=abs(curr-req[mn]);
+        done[mn]=true;
+        curr=req[mn];
+        
+    }
+    cout<<"\ntotal tracks movement is: "<<total;
+
+    return 0;
+}

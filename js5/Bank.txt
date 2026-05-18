@@ -1,0 +1,78 @@
+#include <iostream>
+using namespace std;
+
+#define P 5   // processes
+#define R 3   // resources
+
+int main() {
+    int Available[R] = {3, 3, 2};
+
+    int Max[P][R] = {
+        {7,5,3},
+        {3,2,2},
+        {9,0,2},
+        {2,2,2},
+        {4,3,3}
+    };
+
+    int Allocation[P][R] = {
+        {0,1,0},
+        {2,0,0},
+        {3,0,2},
+        {2,1,1},
+        {0,0,2}
+    };
+
+    int Need[P][R];
+
+    // Calculate Need
+    for(int i = 0; i < P; i++)
+        for(int j = 0; j < R; j++)
+            Need[i][j] = Max[i][j] - Allocation[i][j];
+
+    bool Finish[P] = {false};
+    int Work[R];
+
+    // Copy Available → Work
+    for(int i = 0; i < R; i++)
+        Work[i] = Available[i];
+
+    cout << "Safe sequence: ";
+
+    for(int count = 0; count < P; count++) {
+        for(int i = 0; i < P; i++) {
+
+            if(!Finish[i]) {
+                bool canRun = true;
+
+                for(int j = 0; j < R; j++) {
+                    if(Need[i][j] > Work[j]) {
+                        canRun = false;
+                        break;
+                    }
+                }
+
+                if(canRun) {
+                    cout << "P" << i << " ";
+
+                    for(int j = 0; j < R; j++)
+                        Work[j] += Allocation[i][j];
+
+                    Finish[i] = true;
+                }
+            }
+        }
+    }
+
+    // Check if all finished
+    bool safe = true;
+    for(int i = 0; i < P; i++)
+        if(!Finish[i]) safe = false;
+
+    if(safe)
+        cout << "\nSystem is SAFE\n";
+    else
+        cout << "\nSystem is UNSAFE\n";
+
+    return 0;
+}

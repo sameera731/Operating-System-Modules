@@ -1,0 +1,50 @@
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <semaphore.h>
+using namespace std;
+
+int readCount = 0;
+mutex mtx;
+sem_t wrt;   // semaphore
+
+void reader(int id) {
+    mtx.lock();
+    readCount++;
+    if (readCount == 1) {
+        sem_wait(&wrt); // first reader blocks writers
+    }
+    mtx.unlock();
+
+    cout << "Reader " << id << " is reading\n";
+
+    mtx.lock();
+    readCount--;
+    if (readCount == 0) {
+        sem_post(&wrt); // last reader allows writers
+    }
+    mtx.unlock();
+}
+
+void writer(int id) {
+    sem_wait(&wrt);
+
+    cout << "Writer " << id << " is writing\n";
+
+    sem_post(&wrt);
+}
+
+int main() {
+    sem_init(&wrt, 0, 1); // initialize semaphore
+
+    thread r1(reader, 1);
+    thread r2(reader, 2);
+    thread w1(writer, 1);
+
+    r1.join();
+    r2.join();
+    w1.join();
+
+    sem_destroy(&wrt);
+    return 0;
+}

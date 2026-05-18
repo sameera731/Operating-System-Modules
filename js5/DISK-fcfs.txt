@@ -1,0 +1,41 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    //take total no of tracks n, head pos, no of requests m
+    //take input ref string of track calls. 
+    //cur=head, total=0;
+    //print output is:
+    //then we know each process will be printed so loop for m, track i is called and total+=abs(cur-i), cur=i
+    //total is total
+
+    int m,n,head,curr;
+    int total=0;
+    cout<<"\nenter total no of tracks: ";
+    cin>>n;
+    cout<<"\n enter r/w head position";
+    cin>>head;
+    curr=head;
+    cout<<"\nenter total no of requests: ";
+    cin>>m;
+    cout<<"\nenter the requests one by one with space: \n";
+    vector<int>req(m);
+    
+    for(int i=0; i<m; i++){
+        int a;
+        cin>>a;
+        req[i]=a;
+
+    }
+    cout<<"\noutput is (FCFS): "<<endl;
+    for(int i=0; i<m; i++){
+        //fcfs
+        cout<<req[i]<<" ";
+        total+=abs(curr-req[i]);
+        curr=req[i];
+
+
+    }
+    cout<<"\nTotal track movements of head is: "<<total;
+
+    return 0;
+}

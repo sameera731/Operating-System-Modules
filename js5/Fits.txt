@@ -1,0 +1,173 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+
+// -------- FIRST FIT --------
+void firstFit(vector<int> blocks, vector<int> process) {
+
+    cout << "\nFIRST FIT:\n";
+
+    for(int i = 0; i < process.size(); i++) {
+
+        bool done = false;
+
+        for(int j = 0; j < blocks.size(); j++) {
+
+            if(blocks[j] >= process[i]) {
+
+                cout << "Process " << process[i]
+                     << " allocated to block " << j << endl;
+
+                blocks[j] -= process[i];
+                done = true;
+                break;
+            }
+        }
+
+        if(!done)
+            cout << "Process " << process[i]
+                 << " not allocated\n";
+    }
+}
+
+
+
+// -------- BEST FIT --------
+void bestFit(vector<int> blocks, vector<int> process) {
+
+    cout << "\nBEST FIT:\n";
+
+    for(int i = 0; i < process.size(); i++) {
+
+        int idx = -1;
+
+        for(int j = 0; j < blocks.size(); j++) {
+
+            if(blocks[j] >= process[i]) {
+
+                if(idx == -1 || blocks[j] < blocks[idx])
+                    idx = j;
+            }
+        }
+
+        if(idx != -1) {
+
+            cout << "Process " << process[i]
+                 << " allocated to block " << idx << endl;
+
+            blocks[idx] -= process[i];
+        }
+        else {
+            cout << "Process " << process[i]
+                 << " not allocated\n";
+        }
+    }
+}
+
+
+
+// -------- NEXT FIT --------
+void nextFit(vector<int> blocks, vector<int> process) {
+
+    cout << "\nNEXT FIT:\n";
+
+    int last = 0;
+
+    for(int i = 0; i < process.size(); i++) {
+
+        bool done = false;
+
+        for(int k = 0; k < blocks.size(); k++) {
+
+            int j = (last + k) % blocks.size();
+
+            if(blocks[j] >= process[i]) {
+
+                cout << "Process " << process[i]
+                     << " allocated to block " << j << endl;
+
+                blocks[j] -= process[i];
+                last = j;
+                done = true;
+                break;
+            }
+        }
+
+        if(!done)
+            cout << "Process " << process[i]
+                 << " not allocated\n";
+    }
+}
+
+
+
+// -------- WORST FIT --------
+void worstFit(vector<int> blocks, vector<int> process) {
+
+    cout << "\nWORST FIT:\n";
+
+    for(int i = 0; i < process.size(); i++) {
+
+        int idx = -1;
+
+        for(int j = 0; j < blocks.size(); j++) {
+
+            if(blocks[j] >= process[i]) {
+
+                if(idx == -1 || blocks[j] > blocks[idx])
+                    idx = j;
+            }
+        }
+
+        if(idx != -1) {
+
+            cout << "Process " << process[i]
+                 << " allocated to block " << idx << endl;
+
+            blocks[idx] -= process[i];
+        }
+        else {
+            cout << "Process " << process[i]
+                 << " not allocated\n";
+        }
+    }
+}
+
+
+
+int main() {
+
+    int nb, np;
+
+    cout << "Enter number of memory blocks: ";
+    cin >> nb;
+
+    vector<int> blocks(nb);
+
+    cout << "Enter block sizes:\n";
+    for(int i = 0; i < nb; i++)
+        cin >> blocks[i];
+
+
+
+    cout << "Enter number of processes: ";
+    cin >> np;
+
+    vector<int> process(np);
+
+    cout << "Enter process sizes:\n";
+    for(int i = 0; i < np; i++)
+        cin >> process[i];
+
+
+    firstFit(blocks, process);
+
+    bestFit(blocks, process);
+
+    nextFit(blocks, process);
+
+    worstFit(blocks, process);
+
+    return 0;
+}

@@ -1,0 +1,58 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    
+
+    int m,n,head,curr;
+    int total=0;
+    cout<<"\nenter total no of tracks: ";
+    cin>>n;
+    cout<<"\n enter r/w head position";
+    cin>>head;
+    curr=head;
+    cout<<"\nenter total no of requests: ";
+    cin>>m;
+    cout<<"\nenter the requests one by one with space: \n";
+    vector<int>req(m);
+    
+    for(int i=0; i<m; i++){
+        int a;
+        cin>>a;
+        req[i]=a;
+
+    }
+    sort(req.begin(), req.end()); /////impppppppppp
+    
+    cout<<"\noutput is (C-SCAN): "<<endl;
+    for(int i=0; i<m; i++){
+        if(req[i]>=head){
+            cout<<req[i]<<"->";
+            total+=abs(curr-req[i]);
+            curr=req[i];
+        }
+
+
+    }
+    total+=abs((n-1)-curr);//right end i.e n used
+    curr=n-1;
+    total+=abs(curr-0); //go to left end but no marking reqs but increment total       //from here different from simple scan
+    curr=0;
+    //now while traversing left to right, mark reqs<head. 
+    total+=abs(curr-req[0]); //reach curr to first req cuz rn u at left end
+    curr=req[0];
+
+    for(int i=0; i<m; i++){
+        if(req[i]<head){
+            cout<<req[i]<<"->";
+            total+=abs(curr-req[i]);
+            curr=req[i];
+        }
+        else {break;}
+    }
+    
+
+    cout<<"\ntotal track moves ="<<total;
+
+
+    return 0;
+}

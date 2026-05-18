@@ -1,0 +1,226 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+char M[100][4];
+
+char IR[4];
+
+char R[4];
+
+int IC = 0;
+
+ifstream fin("input.txt");
+
+ofstream fout("output.txt");
+
+
+// ---------------- LOAD PROGRAM ----------------
+void load() {
+
+    string word;
+
+    int mem = 0;
+
+    while(fin >> word) {
+
+        // data starts after H
+        if(word[0] >= '0' && word[0] <= '9')
+            break;
+
+        for(int j = 0; j < 4; j++) {
+
+            if(j < word.size())
+                M[mem][j] = word[j];
+            else
+                M[mem][j] = ' ';
+        }
+
+        mem++;
+    }
+
+    fin.clear();
+    fin.seekg(0);
+}
+
+
+
+// ---------------- READ DATA ----------------
+void GD(int loc) {
+
+    string data;
+
+    fin >> data;
+
+    while(!(data[0] >= '0' && data[0] <= '9'))
+        fin >> data;
+
+    for(int i = 0; i < 4; i++) {
+
+        if(i < data.size())
+            M[loc][i] = data[i];
+        else
+            M[loc][i] = ' ';
+    }
+}
+
+
+
+// ---------------- PRINT DATA ----------------
+void PD(int loc) {
+
+    for(int i = 0; i < 4; i++)
+        fout << M[loc][i];
+
+    fout << endl;
+}
+
+
+
+// ---------------- EXECUTE ----------------
+void execute() {
+
+    while(true) {
+
+        // fetch
+        for(int i = 0; i < 4; i++)
+            IR[i] = M[IC][i];
+
+        IC++;
+
+        string opcode = "";
+
+        opcode += IR[0];
+        opcode += IR[1];
+
+        int loc = (IR[2]-'0')*10 + (IR[3]-'0');
+
+
+
+        // ---------- GD ----------
+        if(opcode == "GD") {
+
+            GD(loc);
+        }
+
+
+
+        // ---------- PD ----------
+        else if(opcode == "PD") {
+
+            PD(loc);
+        }
+
+
+
+        // ---------- LR ----------
+        else if(opcode == "LR") {
+
+            for(int i = 0; i < 4; i++)
+                R[i] = M[loc][i];
+        }
+
+
+
+        // ---------- SR ----------
+        else if(opcode == "SR") {
+
+            for(int i = 0; i < 4; i++)
+                M[loc][i] = R[i];
+        }
+
+
+
+        // ---------- AD ----------
+        else if(opcode == "AD") {
+
+            string a="", b="";
+
+            for(int i = 0; i < 4; i++) {
+                a += R[i];
+                b += M[loc][i];
+            }
+
+            int x = stoi(a);
+
+            int y = stoi(b);
+
+            int sum = x + y;
+
+            string s = to_string(sum);
+
+            for(int i = 0; i < 4; i++) {
+
+                if(i < s.size())
+                    R[i] = s[i];
+                else
+                    R[i] = ' ';
+            }
+        }
+
+
+
+        // ---------- SB ----------
+        else if(opcode == "SB") {
+
+            string a="", b="";
+
+            for(int i = 0; i < 4; i++) {
+                a += R[i];
+                b += M[loc][i];
+            }
+
+            int x = stoi(a);
+
+            int y = stoi(b);
+
+            int diff = x - y;
+
+            string s = to_string(diff);
+
+            for(int i = 0; i < 4; i++) {
+
+                if(i < s.size())
+                    R[i] = s[i];
+                else
+                    R[i] = ' ';
+            }
+        }
+
+
+
+        // ---------- H ----------
+        else if(IR[0] == 'H') {
+
+            break;
+        }
+    }
+}
+
+
+
+// ---------------- MAIN ----------------
+int main() {
+
+    load();
+
+    execute();
+
+    cout << "Execution Finished.\n";
+
+    cout << "Check output.txt\n";
+
+    return 0;
+}
+
+/*
+input.txt
+GD10
+GD11
+LR10
+AD11
+SR12
+PD12
+H
+5
+7
+*/

@@ -1,0 +1,98 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+
+    int n, tq;
+
+    cout<<"Enter number of processes: ";
+    cin>>n;
+
+    vector<int> AT(n), BT(n), REM(n),
+                CT(n), TAT(n), WT(n), RT(n,-1);
+
+    vector<bool> done(n,false);
+
+    cout<<"\nEnter AT and BT:\n";
+
+    for(int i=0;i<n;i++){
+
+        cin>>AT[i]>>BT[i];
+
+        REM[i]=BT[i];
+    }
+
+    cout<<"\nEnter Time Quantum: ";
+    cin>>tq;
+
+    int completed=0;
+    int counter=0;
+
+    cout<<"\nGantt Chart:\n";
+
+    while(completed<n){
+
+        bool found=false;
+
+        for(int i=0;i<n;i++){
+
+            if(done[i]==false && AT[i]<=counter){
+
+                found=true;
+
+                // first cpu allocation
+                if(RT[i]==-1)
+                    RT[i]=counter-AT[i];
+
+                cout<<"P"<<i<<"("<<counter<<")->";
+
+                // full quantum
+                if(REM[i]>tq){
+
+                    REM[i]-=tq;
+
+                    counter+=tq;
+                }
+                else{
+
+                    counter+=REM[i];
+
+                    REM[i]=0;
+
+                    CT[i]=counter;
+
+                    TAT[i]=CT[i]-AT[i];
+
+                    WT[i]=TAT[i]-BT[i];
+
+                    done[i]=true;
+
+                    completed++;
+                }
+            }
+        }
+
+        // CPU idle
+        if(found==false){
+
+            cout<<"-1("<<counter<<")->";
+
+            counter++;
+        }
+    }
+
+    cout<<"\n\nPID\tAT\tBT\tCT\tTAT\tWT\tRT\n";
+
+    for(int i=0;i<n;i++){
+
+        cout<<i<<"\t"
+            <<AT[i]<<"\t"
+            <<BT[i]<<"\t"
+            <<CT[i]<<"\t"
+            <<TAT[i]<<"\t"
+            <<WT[i]<<"\t"
+            <<RT[i]<<endl;
+    }
+
+    return 0;
+}

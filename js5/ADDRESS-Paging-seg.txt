@@ -1,0 +1,62 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main() {
+
+    int n, pageSize;
+
+    cin >> n >> pageSize;
+
+    vector<int> pageTable(n);
+
+    for (int i = 0; i < n; i++)
+        cin >> pageTable[i];
+
+    int logicalAddress;
+    cin >> logicalAddress;
+
+    int pageNo = logicalAddress / pageSize;
+    int offset = logicalAddress % pageSize;
+
+    int frameNo = pageTable[pageNo];
+
+    int physicalAddress = frameNo * pageSize + offset;
+
+    cout << "Page Number = " << pageNo << endl;
+    cout << "Offset = " << offset << endl;
+    cout << "Frame Number = " << frameNo << endl;
+    cout << "Physical Address = " << physicalAddress << endl;
+
+    return 0;
+}
+
+//_________________________________________________________________
+#include <bits/stdc++.h>
+using namespace std;
+int main() {
+
+    int n;
+    cin >> n;
+
+    vector<int> base(n), limit(n);
+
+    for (int i = 0; i < n; i++) {
+        cin >> base[i] >> limit[i];
+    }
+
+    int segNo, offset;
+    cin >> segNo >> offset;
+
+    if (offset < limit[segNo]) {
+
+        int physicalAddress = base[segNo] + offset;
+
+        cout << "Physical Address = "
+             << physicalAddress;
+
+    } else {
+
+        cout << "Invalid Address";
+    }
+
+    return 0;
+}

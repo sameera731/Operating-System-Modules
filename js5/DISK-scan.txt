@@ -1,0 +1,63 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    //take all things. then directon is towards larger assumed. i.e right
+    //TAKE REQ AND SORT THE VECTOR SO ITS LIKE ALIGNED ON TRACK LINE ACENDING ORDER. /////////////////imppppppppppp
+    //we know we will print m reqs so outer loop L1 over m             //WE DONT USE NESTED LOOPS IN THIS. 
+    //in l1 we iterate ovser all ms and then print the right ones only.
+    //if req[i]>=head means on right of track line. soprint and do. so udpate total+= 
+    //then do total+=(m-1)-req[curr]  & curr=m-1;          cuz go to end in right
+    //go back to head before starting leftwards total+=curr-head
+    //loop 2 NOT A NESTED LOOP
+    //iterate over m reverse and if req[i]<head then print. and do total+=
+
+    int m,n,head,curr;
+    int total=0;
+    cout<<"\nenter total no of tracks: ";
+    cin>>n;
+    cout<<"\n enter r/w head position";
+    cin>>head;
+    curr=head;
+    cout<<"\nenter total no of requests: ";
+    cin>>m;
+    cout<<"\nenter the requests one by one with space: \n";
+    vector<int>req(m);
+    
+    for(int i=0; i<m; i++){
+        int a;
+        cin>>a;
+        req[i]=a;
+
+    }
+    sort(req.begin(), req.end()); /////impppppppppp
+    
+    cout<<"\noutput is (SCAN): "<<endl;
+    for(int i=0; i<m; i++){
+        if(req[i]>=head){
+            cout<<req[i]<<"->";
+            total+=abs(curr-req[i]);
+            curr=req[i];
+        }
+
+
+    }
+    total+=abs((n-1)-curr);//right end i.e n used
+    curr=n-1;
+    total+=abs(curr-head); //back to head to traverse left now
+    curr=head;
+    //now while traversing left to last request, mark reqs. left trav i.e reverse loop on m
+    for(int i=m-1;i>=0; i-- ){
+        if(req[i]<head){
+            cout<<req[i]<<"->";
+            total+=abs(curr-req[i]);
+            curr=req[i];
+
+        }
+
+    }//last req leftwise done. dont go to left end cause that is part of c scan not this simple scan algo
+
+    cout<<"\ntotal track moves ="<<total;
+
+
+    return 0;
+}

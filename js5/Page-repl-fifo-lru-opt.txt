@@ -1,0 +1,211 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+using namespace std;
+
+void printFrames(vector<int> &f) {
+    for(int x : f)
+        cout << x << " ";
+}
+
+
+// ---------------- FIFO ----------------
+void FIFO(vector<int> pages, int frames) {
+
+    vector<int> f;
+    queue<int> q;
+    int faults = 0;
+
+    cout << "\nFIFO:\n";
+
+    for(int p : pages) {
+
+        bool hit = false;
+
+        for(int x : f)
+            if(x == p)
+                hit = true;
+
+        if(hit) {
+            printFrames(f);
+            cout << " Hit\n";
+        }
+        else {
+            faults++;
+
+            if(f.size() < frames) {
+                f.push_back(p);
+                q.push(p);
+            }
+            else {
+                int old = q.front();
+                q.pop();
+
+                for(int i = 0; i < frames; i++) {
+                    if(f[i] == old) {
+                        f[i] = p;
+                        break;
+                    }
+                }
+
+                q.push(p);
+            }
+
+            printFrames(f);
+            cout << " Miss\n";
+        }
+    }
+
+    cout << "Total Page Faults = " << faults << "\n";
+}
+
+
+// ---------------- LRU ----------------
+void LRU(vector<int> pages, int frames) {
+
+    vector<int> f;
+    vector<int> recent;
+    int faults = 0;
+
+    cout << "\nLRU:\n";
+
+    for(int p : pages) {
+
+        bool hit = false;
+
+        for(int x : f)
+            if(x == p)
+                hit = true;
+
+        if(hit) {
+            recent.erase(find(recent.begin(), recent.end(), p));
+            recent.push_back(p);
+
+            printFrames(f);
+            cout << " Hit\n";
+        }
+        else {
+            faults++;
+
+            if(f.size() < frames) {
+                f.push_back(p);
+            }
+            else {
+                int old = recent.front();
+                recent.erase(recent.begin());
+
+                for(int i = 0; i < frames; i++) {
+                    if(f[i] == old) {
+                        f[i] = p;
+                        break;
+                    }
+                }
+            }
+
+            recent.push_back(p);
+
+            printFrames(f);
+            cout << " Miss\n";
+        }
+    }
+
+    cout << "Total Page Faults = " << faults << "\n";
+}
+
+
+// ---------------- OPTIMAL ----------------
+void OPTIMAL(vector<int> pages, int frames) {
+
+    vector<int> f;
+    int faults = 0;
+
+    cout << "\nOPTIMAL:\n";
+
+    for(int i = 0; i < pages.size(); i++) {
+
+        int p = pages[i];
+
+        bool hit = false;
+
+        for(int x : f)
+            if(x == p)
+                hit = true;
+
+        if(hit) {
+
+            printFrames(f);
+
+            cout << " Hit\n";
+        }
+        else {
+
+            faults++;
+
+            if(f.size() < frames) {
+
+                f.push_back(p);
+            }
+            else {
+
+                int idx = -1;
+                int farthest = -1;
+
+                for(int j = 0; j < frames; j++) {
+
+                    int nextUse = 1e9;
+
+                    for(int k = i + 1; k < pages.size(); k++) {
+
+                        if(f[j] == pages[k]) {
+
+                            nextUse = k;
+
+                            break;
+                        }
+                    }
+
+                    // changed > to >=
+                    if(nextUse >= farthest) {
+
+                        farthest = nextUse;
+
+                        idx = j;
+                    }
+                }
+
+                f[idx] = p;
+            }
+
+            printFrames(f);
+
+            cout << " Miss\n";
+        }
+    }
+
+    cout << "Total Page Faults = " << faults << "\n";
+}
+
+
+int main() {
+
+    int n, frames;
+
+    cout << "Enter number of page requests: ";
+    cin >> n;
+
+    vector<int> pages(n);
+
+    cout << "Enter page requests:\n";
+    for(int i = 0; i < n; i++)
+        cin >> pages[i];
+
+    cout << "Enter number of frames: ";
+    cin >> frames;
+
+    FIFO(pages, frames);
+    LRU(pages, frames);
+    OPTIMAL(pages, frames);
+
+    return 0;
+}
