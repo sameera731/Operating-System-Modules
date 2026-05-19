@@ -1,0 +1,139 @@
+LOOPS-loops.sh
+#!/bin/bash
+#for loop
+echo "for loop eg: "
+for i in 1 2 3 4
+do
+ echo "item is: $i"
+done
+
+#whole loop
+echo "while loop eg:"
+i=1
+while [ $i -lt 5 ]
+do
+    echo "item is: $i"
+    i=` expr $i + 1 `
+done
+
+#until loop
+echo "until loop eg: "
+i=0
+until [ ! $i -lt 5 ]
+do 
+    echo "item is: $i"
+    i=` expr $i + 1 `
+done
+
+#nested loop
+echo "nested loop eg: "
+for i in 1 2 3
+do 
+ j=$i
+ while [ $j -gt 0 ]
+ do
+  echo -n "x"
+  j=` expr $j - 1 `
+  done
+  echo #move to new line now
+done
+
+#break and continue
+for i in 1 2 3 4 5
+do
+    if [ $i -eq 3 ]
+    then
+        break
+    fi
+
+    echo $i
+done
+
+for i in 1 2 3 4 5
+do
+    if [ $i -eq 3 ]
+    then
+        continue
+    fi
+
+    echo $i
+done
+
+#functions
+echo "function eg: simple create and call"
+hello() {
+    echo "Hello"
+}
+
+hello
+
+echo "function eg: with parameters"
+#!/bin/sh
+
+add() {
+    echo "First number: $1"
+    echo "Second number: $2"
+}
+
+add 10 20
+
+echo "function eg: with return value"
+sum() {
+    result=$(( $1 + $2 ))
+    echo $result
+}
+
+ans=$(sum 5 7)
+
+echo "Sum is: $ans"
+
+#array
+echo "array eg: "
+
+arr=(1 2 3)
+
+echo "Original array:"
+echo ${arr[@]}
+
+arr+=(4)
+
+echo "After adding:"
+echo ${arr[@]}
+
+arr[1]=99
+
+echo "After changing:"
+echo ${arr[@]}
+
+unset arr[0]
+
+echo "After deleting:"
+echo ${arr[@]}
+______________________________________________________________________
+basics-s1.sh
+#!/bin/sh
+
+#comment 1
+
+echo "Hello what is your name? enter it"
+read var1
+echo "hello again $var1"
+fruit="kiwi"
+age=6
+echo "fruit b4 editing is: $fruit"
+readonly age
+echo "age is: 6 and readonly"
+fruit="apple"
+echo "fruit after editing is: $fruit"
+# age=8
+__________________________________________________________________________
+special_vars.sh
+#!/bin/sh
+
+echo "filename: $0"
+echo "first param: $1"
+echo "second param: $2"
+echo "no of params: $#"
+echo "quoted values '$*' is : $* "
+echo "quoted values '$@' is: $@ "
+
